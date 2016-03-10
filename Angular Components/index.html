@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en" data-ng-app="myApp">
+<head>
+    <meta charset="UTF-8">
+    <title>Assignment 3</title>
+    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css"/>
+    <script src="bower_components/angular/angular.min.js"></script>
+    <script src="bower_components/angular-resource/angular-resource.min.js"></script>
+    <script src="bower_components/angular-base64/angular-base64.min.js"></script>
+    <script src="scripts.js"></script>
+    <style>
+        img{
+            width: 20px;
+            height: 20px;
+        }
+        #restaurantReport{
+            position: fixed;
+            top: 200px;
+            left: 200px;
+            width: 400px;
+            background-color: #f8f8f8;
+            color: #0f0f0f;
+        }
+        form{
+            width: 30%;
+        }
+        .btn-default{
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body data-ng-controller="restaurantController">
+    <div class="container">
+        <h1>Last Operation: {{message}}</h1>
+        <div id="restaurantReport" ng-show="displayReport" ng-click="hideReport()">
+            <p>ID - {{restaurant._id}}</p>
+            <p>Restaurant ID - {{restaurant.restaurant_id}}</p>
+            <p>Name - {{restaurant.name}}</p>
+            <h4>Address</h4>
+            <hr />
+            <p>Zip Code - {{restaurant.address.zipcode}}</p>
+            <p>Building - {{restaurant.address.building}}</p>
+            <p>Street - {{restaurant.address.street}}</p>
+            <h4>Coordinates</h4>
+            <p>{{restaurant.address.coord[0]}}</p>
+            <p>{{restaurant.address.coord[1]}}</p>
+            <hr />
+            <!--<ul ng-repeat="coords in restaurant.coord">-->
+                <!--<li ng-repeat="coord1 in coords">{{coord1}}</li>-->
+            <!--</ul>-->
+            <p>Borough - {{restaurant.borough}}</p>
+            <p>Cuisine - {{restaurant.cuisine}}</p>
+            <h4>Grades</h4>
+            <hr />
+            <ul ng-repeat="grade in restaurant.grades">
+                <li>Grade - {{grade.grade}}</li>
+                <li>Score - {{grade.score}}</li>
+                <li>Date - {{grade.date}}</li>
+            </ul>
+        </div>
+        <form>
+            <button type="submit" class="btn btn-primary" ng-click="showForm()">Add Restaurant</button>
+        </form>
+        <!--<form>-->
+            <!--<button type="submit" class="btn btn-default" ng-click="showSearch()">Find Restaurant</button>-->
+        <!--</form>-->
+        <form ng-show="displaySearch" id="searchRestaurant" ng-submit="searchRestaurant()">
+            <div class="form-group">
+                <label for="search">Search</label>
+                <input type="text" class="form-control" id="search" ng-model="search">
+                <button type="submit" class="btn btn-primary">Search</button>
+            </div>
+        </form>
+        <div ng-show="displayForm" id="addRestaurant">
+            <h1>Add a New Restaurant</h1>
+            <form ng-submit="addRestaurant()">
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <input type="text" class="form-control" id="name" ng-model="newName">
+                </div>
+                <div class="form-group">
+                    <label for="restaurantId">Restaurant ID</label>
+                    <input type="text" class="form-control" id="restaurantId" ng-model="newRestaurantId">
+                </div>
+                <fieldset>
+                    <legend>Address</legend>
+                <div class="form-group">
+                    <label for="zipCode">ZipCode</label>
+                    <input type="text" class="form-control" id="zipCode" ng-model="newZipCode">
+                </div>
+                <div class="form-group">
+                    <label for="building">Building</label>
+                    <input type="text" class="form-control" id="building" ng-model="newBuilding">
+                </div>
+                    <div class="form-group">
+                        <label for="street">Street</label>
+                        <input type="text" class="form-control" id="street" ng-model="newStreet">
+                    </div>
+                </fieldset>
+                <fieldset>
+                    <legend>Coordinates</legend>
+                    <div class="form-group">
+                        <label for="longitude">Longitude</label>
+                        <input type="text" class="form-control" id="longitude" ng-model="newLongitude">
+                    </div>
+                    <div class="form-group">
+                        <label for="latitiude">Latitude</label>
+                        <input type="text" class="form-control" id="latitiude" ng-model="newLatitude">
+                    </div>
+                </fieldset>
+                <div class="form-group">
+                    <label for="borough">Borough</label>
+                    <input type="text" class="form-control" id="borough" ng-model="newBorough">
+                </div>
+                <div class="form-group">
+                    <label for="cuisine">Cuisine</label>
+                    <input type="text" class="form-control" id="cuisine" ng-model="newCuisine">
+                </div>
+                <fieldset>
+                    <legend>Grade</legend>
+                    <div class="form-group">
+                        <label for="grade">Grade</label>
+                        <input type="text" class="form-control" id="grade" ng-model="newGrade">
+                    </div>
+                    <div class="form-group">
+                        <label for="score">Score</label>
+                        <input type="text" class="form-control" id="score" ng-model="newScore">
+                    </div>
+                    <div class="form-group">
+                        <label for="date">Date</label>
+                        <input type="date" class="form-control" id="date" ng-model="newDate">
+                    </div>
+                </fieldset>
+                <button type="submit" class="btn btn-primary">Add Restaurant</button>
+            </form>
+        </div>
+        <hr />
+        <button class="btn btn-default" ng-click="refreshRestaurants()">Refresh Table</button>
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>Restaurant ID</th>
+                    <th>Name</th>
+                    <th>Borough</th>
+                    <th>Cuisine</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="restaurant in restaurants">
+                    <td contenteditable="true"  id="updateRestaurantId{{restaurant._id}}">{{restaurant.restaurant_id}}</td>
+                    <td contenteditable="true" id="updateRestaurantName{{restaurant._id}}">{{restaurant.name}}</td>
+                    <td contenteditable="true" id="updateRestaurantBorough{{restaurant._id}}">{{restaurant.borough}}</td>
+                    <td contenteditable="true" id="updateRestaurantCuisine{{restaurant._id}}">{{restaurant.cuisine}}</td>
+                    <td><img src="images/info.png" ng-click="showRestaurant(restaurant._id)"></td>
+                    <td><img src="images/save.png" ng-click="updateRestaurant(restaurant._id)"></td>
+                    <td><img src="images/delete.png" ng-click="deleteRestaurant(restaurant._id)"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
